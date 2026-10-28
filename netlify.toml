@@ -1,0 +1,19 @@
+[build]
+  command = "bun run build"
+  publish = "dist"
+
+# Set VITE_API_BASE_URL (Site configuration > Environment variables) to the live API, for example
+# https://payest-api.onrender.com/api . It is read at build time, so redeploy after changing it.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=()"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,42 @@
+# Render Blueprint: managed Postgres plus the API as a Docker web service.
+# Dashboard: New > Blueprint > pick this repository. Then fill the variables marked "sync: false".
+databases:
+  - name: payest-db
+    databaseName: payest
+    user: payest
+    plan: basic-256mb
+    ipAllowList: [] # private network only; the API reaches it over Render's internal network
+
+services:
+  - type: web
+    name: payest-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: payest-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: TOTP_ENC_KEY
+        generateValue: true # base64, 32 bytes. Do not rotate: it encrypts stored 2FA secrets.
+      - key: TRUST_PROXY
+        value: "true"
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: MAIL_MODE
+        value: resend
+      - key: ALLOWED_ORIGINS # exact https origin(s) of the frontend, comma separated, no trailing slash
+        sync: false
+      - key: APP_URL # public https URL of the frontend, used in email links
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM # a sender verified in Resend, e.g. "Payest Wallet <no-reply@yourdomain.com>"
+        sync: false

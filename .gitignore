@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.circle
+recovery_file*
+traces.jsonl
+console.jsonl
+contracts/out
+contracts/cache
+*.log
+
+# Vendored Foundry dependency, not needed to run the app or the API
+lib/
+.env.test

@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.*
+.git
+contracts
+src
+scripts
+public
+docs
+*.log
